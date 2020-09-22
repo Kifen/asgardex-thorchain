@@ -1,0 +1,28 @@
+{
+  "name": "asgardex-thorchain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jest.config.js",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "bech32": "^1.1.4",
+    "big.js": "^5.2.2",
+    "bip32": "^2.0.5",
+    "bip39": "^3.0.2",
+    "crypto-js": "^4.0.0",
+    "elliptic": "^6.5.3",
+    "secp256k1": "^4.0.2",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.3"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "ts-jest": "^26.4.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
