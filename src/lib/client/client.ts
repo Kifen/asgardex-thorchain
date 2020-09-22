@@ -6,6 +6,8 @@ import {
   getPropValue,
 } from "../utils";
 import * as bech32 from "bech32";
+import midgard from "@thorchain/asgardex-midgard";
+import { BigSource } from "big.js";
 
 export const NETWORK_PREFIX_MAPPING = {
   testnet: "tthor",
@@ -27,6 +29,10 @@ export class ThorClient {
     this.addressPrefix = NETWORK_PREFIX_MAPPING[network];
     this._httpClient = new HttpRequest(server);
   }
+
+  getThorChainBaseUrl = async (): Promise<string> => {
+    return await midgard(this.network, true);
+  };
 
   checkAddress = (address: string, prefix: string): boolean => {
     try {
@@ -73,5 +79,49 @@ export class ThorClient {
     } catch (err) {
       return [];
     }
+  }
+
+  async transfer(
+    fromAddress: string,
+    toAddress: string,
+    asset: string,
+    amount: BigSource,
+    memo: string,
+    privateKey: Buffer
+  ) {
+    const chainId = await this.setChainId();
+    const { sequence, accountNumber } = await this.getAccount(fromAddress);
+  }
+
+  async getBlock(blockHeight: string) {
+    try {
+      const res: any = await this._httpClient.request(
+        "get",
+        `/blocks/${blockHeight}`
+      );
+      return res.result;
+    } catch (err) {
+      throw new Error(`Failed to get block: ${err}`);
+    }
+  }
+
+  async setChainId(chainId = this.chainId) {
+    if (!chainId) {
+      const data = await this.getBlock("latest");
+      chainId = getPropValue(data, "block.header.chain_id");
+    }
+    this.chainId = chainId;
+    return chainId;
+  }
+
+  async getAccount(address: string) {
+    const data = await this.accountInfo(address);
+    const sequence = getPropValue(data, "result.value.sequence");
+    const accountNumber = getPropValue(data, "result.value.account_number");
+    this.sequence =
+      this.sequence && sequence < this.sequence ? this.sequence : sequence;
+    this.accountNumber = accountNumber;
+
+    return { sequence: this.sequence, accountNumber: this.accountNumber };
   }
 }

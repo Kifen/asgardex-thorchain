@@ -93,6 +93,7 @@ export class Client implements thorchainClient {
   getClientUrl = (): string => {
     return this.chainUrl;
   };
+
   static validatePhrase = (phrase: string): boolean => {
     return BIP39.validateMnemonic(phrase);
   };
@@ -120,6 +121,9 @@ export class Client implements thorchainClient {
     return this.network;
   };
 
+  getBaseUrl = async (): Promise<string> => {
+    return await this.thorClient.getThorChainBaseUrl();
+  };
   getAddress = (): string | undefined => {
     if (this.address) return this.address;
     let privateKey;
