@@ -5,8 +5,6 @@ describe("ThorChainClient", function () {
   const phrase =
     "print detect entire settle hurt cactus bounce asthma rifle ring fragile magic skull twin army puppy indicate include someone palace hedgehog ready middle this";
   const testnetAddress = "tbnb1gz2hct8d7g7e9wfugqtstl44kt8va4qt63c8gx";
-  const mnemonic =
-    "swear buyer security impulse public stereo peasant correct cross tornado bid discover anchor float venture deal patch property cool wreck eight dwarf december surface";
 
   beforeEach(() => {
     const network = "testnet";
@@ -16,9 +14,9 @@ describe("ThorChainClient", function () {
 
     thorClient = new ThorChainClient({
       network: "testnet",
-      prefix: "band",
-      phrase: mnemonic,
-      hdpath: hdPath,
+      prefix: "tbnb",
+      phrase: phrase,
+      hdpath: "m/44'/714'/0'/0/0",
       chainId,
       chainUrl,
     });

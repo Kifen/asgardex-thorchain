@@ -1,7 +1,7 @@
 import {
   Address,
   HDPATH,
-  NETWORK_PREFIX_MAPPING,
+  NETWORK_PREFIX,
   Balances,
   TxPage,
   GetTxsParams,
@@ -80,13 +80,13 @@ export class Client implements thorchainClient {
   };
 
   setNetwork = (network: string): thorchainClient => {
-    if (!NETWORK_PREFIX_MAPPING[network]) {
+    if (!NETWORK_PREFIX[network]) {
       throw new Error(
         "Invalid network. Network must be either Testnet or Chaosnet"
       );
     }
 
-    this.network = NETWORK_PREFIX_MAPPING[network];
+    this.network = NETWORK_PREFIX[network];
     return this;
   };
 

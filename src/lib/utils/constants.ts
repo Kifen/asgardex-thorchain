@@ -1,4 +1,4 @@
-export const NETWORK_PREFIX_MAPPING = {
+export const NETWORK_PREFIX = {
   testnet: "tthor",
   chaosnet: "thor",
 } as const;
