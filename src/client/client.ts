@@ -108,7 +108,7 @@ export class Client implements thorchainClient {
   }
 
   getPrefix = (): string => {
-    return this.prefix;
+    return NETWORK_PREFIX[this.network];
   };
 
   getNetwork = (): Network => {
@@ -116,8 +116,6 @@ export class Client implements thorchainClient {
   };
 
   getBaseUrl = (): string => {
-    //await this.thorClient.getThorChainBaseUrl();
-    console.log(this.network === "testnet", this.network);
     return this.network === "testnet"
       ? "http://175.41.137.209:8080"
       : "http://18.159.173.48:8080";
