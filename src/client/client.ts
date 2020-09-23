@@ -108,7 +108,7 @@ export class Client implements thorchainClient {
   }
 
   getPrefix = (): string => {
-    return NETWORK_PREFIX[this.network];
+    return this.prefix;
   };
 
   getNetwork = (): Network => {
