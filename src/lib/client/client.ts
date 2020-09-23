@@ -100,6 +100,7 @@ export class ThorClient {
   ) {
     const chainId = await this.setChainId();
     const { sequence, accountNumber } = await this.getAccount(fromAddress);
+    console.log("CHAIN_ID: ", chainId, sequence);
 
     const msg = {
       msgs: [

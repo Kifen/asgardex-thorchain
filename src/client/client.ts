@@ -28,7 +28,7 @@ export interface thorchainClient {
   validateAddress(address: string): boolean;
   getExplorerUrl(): string;
   getTransactions(params?: GetTxsParams): Promise<TxPage>;
-  //vaultTx(params: VaultTxParams): Promise<TransferResult>;
+  vaultTx(params: VaultTxParams): Promise<TransferResult>;
 }
 
 export class Client implements thorchainClient {
