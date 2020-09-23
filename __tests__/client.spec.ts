@@ -3,26 +3,32 @@ import { VaultTxParams } from "../src/lib/utils";
 
 describe("ThorChainClient", function () {
   let thorClient: ThorChainClient;
-  const phrase =
-    "print detect entire settle hurt cactus bounce asthma rifle ring fragile magic skull twin army puppy indicate include someone palace hedgehog ready middle this";
-  const testnetAddress = "tbnb1gz2hct8d7g7e9wfugqtstl44kt8va4qt63c8gx";
+  const mnemonic =
+    "swear buyer security impulse public stereo peasant correct cross tornado bid discover anchor float venture deal patch property cool wreck eight dwarf december surface";
+  const testnetAddress = "cosmos1fnk3lxlks7tdg6x55ynv6vggtnd73ycqsq89sl";
 
   beforeEach(() => {
-    const chainId = "";
-    const chainUrl = "https://lcd-band.cosmostation.io";
+    const chainId = "cosmoshub-3";
+    const chainUrl = "https://lcd-cosmos-free.cosmostation.io";
 
     thorClient = new ThorChainClient({
       network: "testnet",
-      prefix: "tbnb",
-      phrase: phrase,
-      hdpath: "m/44'/714'/0'/0/0",
+      prefix: "cosmos",
+      phrase: mnemonic,
+      hdpath: "m/44'/118'/0'/0/0",
       chainId,
       chainUrl,
     });
   });
 
-  it("should have right address", async () => {
+  it("should get correct address", async () => {
     const address = thorClient.getAddress();
     expect(testnetAddress).toEqual(address);
   });
+
+  /*  it("should get balance", async () => {
+    const balance = await thorClient.getBalance(testnetAddress);
+    console.log(balance);
+    console.log(balance);
+  }); */
 });
