@@ -79,19 +79,13 @@ export class Client implements thorchainClient {
     return this;
   };
 
-  setNetwork = (network: string): thorchainClient => {
-    if (!NETWORK_PREFIX[network]) {
-      throw new Error(
-        "Invalid network. Network must be either Testnet or Chaosnet"
-      );
-    }
-
-    this.network = NETWORK_PREFIX[network];
+  setNetwork = (network: Network): thorchainClient => {
+    this.network = network;
     return this;
   };
 
   getClientUrl = (): string => {
-    return this.chainUrl;
+    return this.getBaseUrl();
   };
 
   static validatePhrase = (phrase: string): boolean => {
@@ -121,8 +115,9 @@ export class Client implements thorchainClient {
     return this.network;
   };
 
-  getBaseUrl = async (): Promise<string> => {
+  getBaseUrl = (): string => {
     //await this.thorClient.getThorChainBaseUrl();
+    console.log(this.network === "testnet", this.network);
     return this.network === "testnet"
       ? "http://175.41.137.209:8080"
       : "http://18.159.173.48:8080";
@@ -160,8 +155,8 @@ export class Client implements thorchainClient {
       params.limit = 1;
     }
     const { address, txid, limit, offset, type } = params;
-
-    const url = new URL(`${this.getBaseUrl()}/v1/txs`);
+    console.log("URL: ", this.getClientUrl());
+    const url = new URL(`${this.getClientUrl()}/v1/txs`);
 
     if (address) url.searchParams.set("address", address);
     if (txid) url.searchParams.set("txid", txid);

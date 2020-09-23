@@ -33,6 +33,7 @@ export class ThorClient {
     if (!server) {
       throw new Error("Thorchain server should not be null");
     }
+    this.network = network;
     this.addressPrefix = NETWORK_PREFIX_MAPPING[network];
     this._httpClient = new HttpRequest(server);
   }
