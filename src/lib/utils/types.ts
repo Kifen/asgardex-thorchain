@@ -85,8 +85,8 @@ export type GetTxsParams = {
   txid?: string;
   asset?: string;
   type?: TxType;
-  offset?: number;
-  limit?: number;
+  offset: number;
+  limit: number;
 };
 
 export type VaultTxParams = {

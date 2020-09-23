@@ -65,7 +65,7 @@ export class Client implements thorchainClient {
     this.hdPath = hdpath;
     this.prefix = prefix;
 
-    this.thorClient = new ThorClient(this.getClientUrl(), this.network);
+    this.thorClient = new ThorClient(this.chainUrl, this.network);
   }
 
   setPhrase = (phrase: string): thorchainClient => {
@@ -148,13 +148,8 @@ export class Client implements thorchainClient {
   };
 
   getTransactions = async (params: GetTxsParams): Promise<TxPage> => {
-    if (!(params.offset && params.limit)) {
-      params.offset = 1;
-      params.limit = 1;
-    }
     const { address, txid, limit, offset, type } = params;
-    console.log("URL: ", this.getClientUrl());
-    const url = new URL(`${this.getClientUrl()}/v1/txs`);
+    const url = new URL(`${this.getBaseUrl()}/v1/txs`);
 
     if (address) url.searchParams.set("address", address);
     if (txid) url.searchParams.set("txid", txid);
