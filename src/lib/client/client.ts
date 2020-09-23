@@ -6,10 +6,15 @@ import {
   getPropValue,
   Transaction,
   TxParams,
+  convertStringToBytes,
+  sortObject,
+  getPubKeyBase64,
 } from "../utils";
 import * as bech32 from "bech32";
 import midgard from "@thorchain/asgardex-midgard";
 import { BigSource } from "big.js";
+import crypto from "crypto";
+import secp256k1 from "secp256k1";
 
 export const NETWORK_PREFIX_MAPPING = {
   testnet: "tthor",
@@ -106,26 +111,63 @@ export class ThorClient {
           },
         },
       ],
-      //chain_id: chainId,
-      //memo: memo,
-      //fee: { amount: [{ denom: "", amount: "0" }], gas: "20000" },
-      //account_number: accountNumber,
-      //sequence,
+      chain_id: chainId,
+      memo: memo,
+      fee: { amount: [{ denom: "", amount: "0" }], gas: "20000" },
+      account_number: accountNumber,
+      sequence,
     };
 
-    const signedTx = this.buildTransaction(
-      msg,
-      memo,
-      null,
-      sequence,
-      accountNumber,
-      chainId,
-      privateKey,
-      mode
+    let unsignedMsg = this.newMsg(msg);
+    const signedTx = this.sign(unsignedMsg, privateKey);
+    return await this.broadcastTx(signedTx);
+  }
+
+  newMsg(input) {
+    const msg = new Object();
+    msg["json"] = input;
+    msg["bytes"] = convertStringToBytes(
+      JSON.stringify(sortObject(msg["json"]))
     );
 
-    console.log("BROADCAST: ", signedTx);
-    return await this.broadcastTx(signedTx);
+    return msg;
+  }
+
+  sign(unsignedMsg, priv, modeType = "sync") {
+    let message = new Object();
+    message = unsignedMsg.json;
+    const hash = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(sortObject(message)))
+      .digest("hex");
+
+    const buffer = Buffer.from(hash, "hex");
+    let sig = secp256k1.ecdsaSign(buffer, priv);
+    const sigBase64 = Buffer.from(sig.signature, "binary").toString("base64");
+
+    console.log("SIG: ", getPubKeyBase64(priv));
+    let signedTx = new Object();
+    signedTx = {
+      tx: {
+        msg: unsignedMsg.json.msgs,
+        fee: unsignedMsg.json.fee,
+        signatures: [
+          {
+            account_number: unsignedMsg.json.account_number,
+            sequence: unsignedMsg.json.sequence,
+            signature: sigBase64,
+            pub_key: {
+              type: "tendermint/PubKeySecp256k1",
+              value: getPubKeyBase64(priv),
+            },
+          },
+        ],
+        memo: unsignedMsg.json.memo,
+      },
+      mode: modeType,
+    };
+
+    return signedTx;
   }
 
   buildTransaction(
