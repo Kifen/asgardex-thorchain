@@ -6,6 +6,7 @@ import * as bech32 from "bech32";
 import { SHA256 } from "crypto-js";
 import * as Hex from "crypto-js/enc-hex";
 import { RIPEMD160 } from "crypto-js";
+import secp256k1 from "secp256k1";
 
 export const getPrivateKey = (mnemonic: string, hdPath: string): Buffer => {
   const masterKey = deriveMasterKey(mnemonic);
@@ -114,3 +115,20 @@ export const decodeAddress = (value: string): Buffer => {
 
 export const getPropValue = (obj, key) =>
   key.split(".").reduce((o, x) => (o == undefined ? o : o[x]), obj);
+
+export const getPubKeyBase64 = (ecpairPriv) => {
+  const pubKeyByte = secp256k1.publicKeyCreate(ecpairPriv);
+  return Buffer.from(pubKeyByte, "binary").toString("base64");
+};
+
+export const sortObject = (obj) => {
+  if (obj === null) return null;
+  if (typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(sortObject);
+  const sortedKeys = Object.keys(obj).sort();
+  const result = {};
+  sortedKeys.forEach((key) => {
+    result[key] = sortObject(obj[key]);
+  });
+  return result;
+};

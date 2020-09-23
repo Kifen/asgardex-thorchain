@@ -95,6 +95,7 @@ export type VaultTxParams = {
   amount: BigSource;
   asset: string;
   memo?: string;
+  mode?: string;
 };
 
 export type TransferResult = { result?: Transfers };

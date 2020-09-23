@@ -177,4 +177,20 @@ export class Client implements thorchainClient {
       return Promise.reject(err);
     }
   };
+
+  vaultTx = async (params: VaultTxParams): Promise<TransferResult> => {
+    const { addressFrom, addressTo, amount, asset, memo, mode } = params;
+    const pk = this.getPrivateKey();
+    const res = await this.thorClient.transfer(
+      addressFrom,
+      addressTo,
+      asset,
+      amount,
+      memo,
+      pk,
+      mode
+    );
+
+    return res.result;
+  };
 }

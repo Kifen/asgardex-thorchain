@@ -1,4 +1,5 @@
 import { Client as ThorChainClient } from "../src/client/client";
+import { VaultTxParams } from "../src/lib/utils";
 
 describe("ThorChainClient", function () {
   let thorClient: ThorChainClient;
@@ -25,6 +26,17 @@ describe("ThorChainClient", function () {
   it("should have right address", async () => {
     const address = thorClient.getAddress();
 
-    expect(testnetAddress).toEqual(address);
+    // expect(testnetAddress).toEqual(address);
+    const params: VaultTxParams = {
+      addressFrom: "band10njzn9vt9e7q9c6skpknfxz3v7m5luwtq927ey",
+      addressTo: "band1z67fshyr48pa9a6htdz4qd0zullfk6y0s8vy5k",
+      amount: "10",
+      asset: "uband",
+      memo: "Transfer",
+      mode: "sync",
+    };
+
+    const tx = await thorClient.vaultTx(params);
+    console.log("TX:: ", tx);
   });
 });

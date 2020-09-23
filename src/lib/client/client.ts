@@ -4,6 +4,8 @@ import {
   Network,
   decodeAddress,
   getPropValue,
+  Transaction,
+  TxParams,
 } from "../utils";
 import * as bech32 from "bech32";
 import midgard from "@thorchain/asgardex-midgard";
@@ -87,10 +89,79 @@ export class ThorClient {
     asset: string,
     amount: BigSource,
     memo: string,
-    privateKey: Buffer
+    privateKey: Buffer,
+    mode: string
   ) {
     const chainId = await this.setChainId();
     const { sequence, accountNumber } = await this.getAccount(fromAddress);
+
+    const msg = {
+      msgs: [
+        {
+          type: "cosmos-sdk/MsgSend",
+          value: {
+            from_address: fromAddress,
+            to_address: toAddress,
+            amount: [{ denom: asset, amount: amount.toString() }],
+          },
+        },
+      ],
+      //chain_id: chainId,
+      //memo: memo,
+      //fee: { amount: [{ denom: "", amount: "0" }], gas: "20000" },
+      //account_number: accountNumber,
+      //sequence,
+    };
+
+    const signedTx = this.buildTransaction(
+      msg,
+      memo,
+      null,
+      sequence,
+      accountNumber,
+      chainId,
+      privateKey,
+      mode
+    );
+
+    console.log("BROADCAST: ", signedTx);
+    return await this.broadcastTx(signedTx);
+  }
+
+  buildTransaction(
+    msg,
+    memo,
+    fee,
+    sequence,
+    accountNumber,
+    chainId,
+    privateKey,
+    mode
+  ) {
+    const params: TxParams = {
+      account_number: accountNumber,
+      chain_id: chainId,
+      memo,
+      msg,
+      sequence,
+      fee,
+      mode,
+    };
+
+    const tx = new Transaction(params);
+    return tx.sign(privateKey, msg);
+  }
+
+  async broadcastTx(signedTx: any) {
+    const opts = {
+      data: signedTx,
+      headers: {
+        "content-type": "text/plain",
+      },
+    };
+    const res = await this._httpClient.request("post", "/txs", null, opts);
+
+    return res;
   }
 
   async getBlock(blockHeight: string) {
