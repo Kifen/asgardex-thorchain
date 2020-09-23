@@ -122,8 +122,12 @@ export class Client implements thorchainClient {
   };
 
   getBaseUrl = async (): Promise<string> => {
-    return await this.thorClient.getThorChainBaseUrl();
+    //await this.thorClient.getThorChainBaseUrl();
+    return this.network === "testnet"
+      ? "http://175.41.137.209:8080"
+      : "http://18.159.173.48:8080";
   };
+
   getAddress = (): string | undefined => {
     if (this.address) return this.address;
     let privateKey;
@@ -157,7 +161,7 @@ export class Client implements thorchainClient {
     }
     const { address, txid, limit, offset, type } = params;
 
-    const url = new URL(`http://3.131.120.23:8080/v1/txs`);
+    const url = new URL(`${this.getBaseUrl()}/v1/txs`);
 
     if (address) url.searchParams.set("address", address);
     if (txid) url.searchParams.set("txid", txid);
