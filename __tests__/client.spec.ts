@@ -29,6 +29,5 @@ describe("ThorChainClient", function () {
   /*  it("should get balance", async () => {
     const balance = await thorClient.getBalance(testnetAddress);
     console.log(balance);
-    console.log(balance);
   }); */
 });

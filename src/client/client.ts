@@ -168,6 +168,13 @@ export class Client implements thorchainClient {
 
   vaultTx = async (params: VaultTxParams): Promise<TransferResult> => {
     const { addressFrom, addressTo, amount, asset, memo, mode } = params;
+    if (!addressFrom)
+      return Promise.reject(
+        new Error(
+          "Parameter `addressFrom` has to be set. Or set a phrase by calling `setPhrase` before to use an address of an imported key."
+        )
+      );
+
     const pk = this.getPrivateKey();
     const res = await this.thorClient.transfer(
       addressFrom,
